@@ -1,0 +1,45 @@
+name: Build Kernel (MIUI)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential git curl wget bison flex zip bc cpio libssl-dev \
+            python-is-python3 ccache \
+            gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
+
+      - name: Download proton-clang (20210522)
+        run: |
+          mkdir -p $HOME/proton-clang
+          cd $HOME/proton-clang
+          wget -q https://github.com/kdrag0n/proton-clang/archive/refs/tags/20210522.zip
+          unzip -q 20210522.zip
+          mv proton-clang-20210522 proton-clang-20210522 || true
+
+      - name: List available defconfigs (for debugging)
+        run: |
+          ls -1 arch/arm64/configs | grep -E "lmi|lmipro" || true
+
+      - name: Build (MIUI zip)
+        env:
+          TARGET_DEVICE: lmi   # 如果你看到 defconfig 是 lmipro_defconfig，就改成 lmipro
+        run: |
+          bash build.sh "${TARGET_DEVICE}" ksu
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: anykernel3-zips
+          path: "*.zip"
