@@ -12,7 +12,7 @@ shopt -s nullglob
 
 TOOLCHAIN_PATH="${HOME}/proton-clang/proton-clang-20210522/bin"
 KSU_SETUP_URL="https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh"
-KSU_TAG_DEFAULT="v3.0.1"
+KSU_TAG_DEFAULT="v1.1.1"
 
 ANYKERNEL_REPO="https://github.com/liyafe1997/AnyKernel3"
 ANYKERNEL_BRANCH="kona"
